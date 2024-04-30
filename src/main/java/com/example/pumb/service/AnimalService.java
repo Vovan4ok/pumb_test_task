@@ -19,4 +19,29 @@ public class AnimalService {
     public List<Animal> findAll() {
         return animalRepository.findAll();
     }
+
+    public static boolean isValid(Animal animal) {
+        return !(animal.getName() == null || animal.getName().isEmpty()) && !(animal.getType() == null || animal.getType().isEmpty()) && !(animal.getSex() == null || animal.getSex().isEmpty()) && animal.getWeight() != null && animal.getCost() != null;
+    }
+
+    public void save(List<Animal> animals) {
+        for(Animal animal : animals) {
+            if(isValid(animal)) {
+                calculateCategory(animal);
+                save(animal);
+            }
+        }
+    }
+
+    public void calculateCategory(Animal animal) {
+        if(animal.getCost() <= 20) {
+            animal.setCategory((byte) 1);
+        } else if(animal.getCost() <= 40) {
+            animal.setCategory((byte) 2);
+        } else if(animal.getCost() <= 60) {
+            animal.setCategory((byte) 3);
+        } else {
+            animal.setCategory((byte) 4);
+        }
+    }
 }
