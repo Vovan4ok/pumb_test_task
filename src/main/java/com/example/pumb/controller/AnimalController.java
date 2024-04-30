@@ -1,5 +1,6 @@
 package com.example.pumb.controller;
 
+import com.example.pumb.domain.Animal;
 import com.example.pumb.service.AnimalService;
 import com.example.pumb.service.FileReaderService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,9 +8,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 public class AnimalController {
@@ -42,5 +47,29 @@ public class AnimalController {
             }
         }
         return "message";
+    }
+
+    @GetMapping(value="/animals", produces = {"application/json"})
+    @ResponseBody
+    public List<Animal> getAnimals(@RequestParam(required = false) String type, @RequestParam(required = false) String sex, @RequestParam(required = false) Byte category, @RequestParam(required = false) String order_by) {
+        List<Animal> animals;
+
+        if(order_by == null) {
+            animals = animalService.findAll();
+        } else {
+            animals = animalService.findAllOrdered(order_by);
+        }
+
+        if(type != null) {
+            animals = animals.stream().filter(a -> a.getType().equals(type)).collect(Collectors.toList());
+        }
+        if(sex != null) {
+            animals = animals.stream().filter(a -> a.getSex().equals(sex)).collect(Collectors.toList());
+        }
+        if(category != null) {
+            animals = animals.stream().filter(a -> a.getCategory().equals(category)).collect(Collectors.toList());
+        }
+
+        return animals;
     }
 }

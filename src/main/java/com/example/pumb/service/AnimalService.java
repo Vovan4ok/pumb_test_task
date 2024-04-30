@@ -3,6 +3,7 @@ package com.example.pumb.service;
 import com.example.pumb.dao.AnimalRepository;
 import com.example.pumb.domain.Animal;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,6 +19,10 @@ public class AnimalService {
 
     public List<Animal> findAll() {
         return animalRepository.findAll();
+    }
+
+    public List<Animal> findAllOrdered(String order_by) {
+        return animalRepository.findAllOrdered(Sort.by(order_by));
     }
 
     public static boolean isValid(Animal animal) {
