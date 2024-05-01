@@ -41,7 +41,7 @@
           "main_methods"
         ],
         "summary": "POST method of api /files/uploads",
-        "description": "Gets the uploaded file, checks its extension for csv or xml and then saving the data from it to the database, returns the page with the following message if the operation was successful or no",
+        "description": "Gets the uploaded file, checks its extension for csv or xml and then saving the data from it to the database, returns the list of animals from the file",
         "operationId": "uploadFile",
         "requestBody": {
           "content": {
@@ -67,7 +67,10 @@
             "content": {
               "*/*": {
                 "schema": {
-                  "type": "string"
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Animal"
+                  }
                 }
               }
             }

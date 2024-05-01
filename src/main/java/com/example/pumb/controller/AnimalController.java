@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -24,7 +25,7 @@ public class AnimalController {
     AnimalService animalService;
 
     @Autowired
-    FileReaderService  fileReaderService;
+    FileReaderService fileReaderService;
 
     @Operation(
             summary = "GET method of api /files/uploads",
@@ -37,26 +38,28 @@ public class AnimalController {
 
     @Operation(
             summary = "POST method of api /files/uploads",
-            description = "Gets the uploaded file, checks its extension for csv or xml and then saving the data from it to the database, returns the page with the following message if the operation was successful or no"
+            description = "Gets the uploaded file, checks its extension for csv or xml and then saving the data from it to the database, returns the list of animals from the file"
     )
     @PostMapping(value="/files/uploads")
-    public String uploadFile(@RequestParam("file") MultipartFile dataFile, HttpServletRequest request) {
+    @ResponseBody
+    public List<Animal> uploadFile(@RequestParam("file") MultipartFile dataFile) {
+        List<Animal> animals;
         if(dataFile.isEmpty()) {
-            request.setAttribute("message", "File was empty");
+            animals = new ArrayList<>();
         } else {
             String fileName = dataFile.getOriginalFilename();
             String fileExtension = fileName.substring(fileName.lastIndexOf(".") + 1).toLowerCase();
             if(fileExtension.equals("csv")) {
-                animalService.save(fileReaderService.getDataFromCSVFile(dataFile));
-                request.setAttribute("message", "Data was successfully read from the file and saved to the database. Please make the GET request by the url /animals to see it.");
+                animals = fileReaderService.getDataFromCSVFile(dataFile);
+                animalService.save(animals);
             } else if(fileExtension.equals("xml")) {
-                animalService.save(fileReaderService.getDataFromXMLFile(dataFile));
-                request.setAttribute("message", "Data was successfully read from the file and saved to the database. Please make the GET request by the url /animals to see it.");
+                animals = fileReaderService.getDataFromXMLFile(dataFile);
+                animalService.save(animals);
             } else {
-                request.setAttribute("message", "Unknown file extension!");
+                animals = new ArrayList<>();
             }
         }
-        return "message";
+        return animals;
     }
 
     @Operation(
