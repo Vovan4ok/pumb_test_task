@@ -50,7 +50,7 @@
 <div class="container">
     <h1 class="header">Upload xml or csv file</h1>
     <form method="post" enctype="multipart/form-data">
-        <input type="file" name="file" class="file-input">
+        <input type="file" required name="file" class="file-input">
         <button type="submit" class="submit-button">Upload</button>
     </form>
 </div>

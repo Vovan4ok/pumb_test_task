@@ -1,0 +1,173 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Animal API",
+    "version": "1.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8080"
+    }
+  ],
+  "tags": [
+    {
+      "name": "main_methods"
+    }
+  ],
+  "paths": {
+    "/files/uploads": {
+      "get": {
+        "tags": [
+          "main_methods"
+        ],
+        "summary": "GET method of api /files/uploads",
+        "description": "Returns the jsp page with the small form where you can upload the csv or xml file",
+        "operationId": "uploadFile_1",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "main_methods"
+        ],
+        "summary": "POST method of api /files/uploads",
+        "description": "Gets the uploaded file, checks its extension for csv or xml and then saving the data from it to the database, returns the page with the following message if the operation was successful or no",
+        "operationId": "uploadFile",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "required": [
+                  "file"
+                ],
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/animals": {
+      "get": {
+        "tags": [
+          "main_methods"
+        ],
+        "summary": "Main GET method of the api",
+        "description": "May get some unrequired params, such as type of the animal, sex or category and of course param order_by for ordering data in the right way, returns the List of animals",
+        "operationId": "getAnimals",
+        "parameters": [
+          {
+            "name": "type",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sex",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "byte"
+            }
+          },
+          {
+            "name": "order_by",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Animal"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Animal": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "name": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          },
+          "sex": {
+            "type": "string"
+          },
+          "weight": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "cost": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "category": {
+            "type": "string",
+            "format": "byte"
+          }
+        }
+      }
+    }
+  }
+}
